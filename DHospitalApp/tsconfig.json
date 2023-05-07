@@ -1,0 +1,12 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "ignoreDeprecations": "5.0"
+  },
+  "include": [
+    "src",
+    "src/declaration.d.ts", "AppNavigator.js",
+  ],
+}
