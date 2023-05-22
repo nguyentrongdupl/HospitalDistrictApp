@@ -7,7 +7,7 @@ interface ICustomButtonProps{
     type?: string,
 }
 
-export const CustomButton = (props: ICustomButtonProps) => {
+const CustomButton = (props: ICustomButtonProps) => {
     const buttonStyles = StyleSheet.create({
         container:{
             width: '100%',
@@ -44,3 +44,5 @@ export const CustomButton = (props: ICustomButtonProps) => {
         </TouchableOpacity>
     )
 }
+
+export default CustomButton;
