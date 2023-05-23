@@ -7,6 +7,6 @@
   },
   "include": [
     "src",
-    "src/declaration.d.ts", "AppNavigator.js",
+    "src/declaration.d.ts",
   ],
 }

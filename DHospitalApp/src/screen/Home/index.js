@@ -8,6 +8,7 @@ import Profile from '../Profile';
 import { MenuCard } from '../../components';
 
 import {TbCalendarTime} from 'react-icons/tb'
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 function DetailsScreen() {
     return (
@@ -26,7 +27,7 @@ function DetailsScreen() {
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Text>Home screen</Text>
         <MenuCard item={{
-          image: <TbCalendarTime/>,
+          icon: <Ionicons name="md-checkmark-circle" size={32} color="green" />,
           title: 'Lịch sử khám bệnh',
           description: 'Lịch sử khám chữa bệnh'
         }}/>

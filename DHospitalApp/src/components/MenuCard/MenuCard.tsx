@@ -1,9 +1,11 @@
 import * as React from 'react'
 import { View, Text, StyleSheet } from 'react-native';
+import { Icon } from '@rneui/themed';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 interface MenuProps{
     item: {
-        image: JSX.Element
+        icon: JSX.Element,
         title: string,
         description: string
     }
@@ -21,10 +23,9 @@ const MenuCard = (props: MenuProps) => {
     })
     return(
         <View style={menuStyle.root}>
-            <Text>MenuCard</Text>
-            {/* <View>
-                {props?.item.image}
-            </View>  */}
+            <View>
+                {props.item.icon}
+            </View> 
             <Text>{props.item?.title}</Text>
             <Text>{props.item?.description}</Text>
         </View>
