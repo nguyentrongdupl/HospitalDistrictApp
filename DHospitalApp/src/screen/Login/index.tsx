@@ -7,13 +7,21 @@ import { validateUserName } from '../../utils/validate';
 import { CustomButton } from '../../components';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Api from '../../api';
+import { AccountRole, ApiStatus } from '../../utils/enum';
+import { baseURL } from '../../api/config/axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { setRole, setUsername,setStatus, getLoginInfo} from '../../redux/reducer';
+import { AppDispatch, RootState} from '../../redux/store';
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({navigation}: {navigation: any}) => {
     const { height } = useWindowDimensions();
 
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [errorMessage, setErrorMessage] = React.useState('');
+
+    const dispatch = useDispatch<AppDispatch>();
+    const { status, role } = useSelector((state: RootState) => state.user)
 
     const loginStyle = StyleSheet.create(
         {
@@ -47,43 +55,41 @@ const LoginScreen = ({navigation}) => {
         setErrorMessage('')
     }, [])
 
+    React.useEffect(() => {
+        if(status === ApiStatus.Success){
+            if (role === AccountRole.Patient){
+                dispatch(setStatus(ApiStatus.None));
+                navigation.navigate('Home');
+            } else {
+                setErrorMessage("Hãy đăng nhập bằng tài khoản bệnh nhân");
+            }
+        }
+    }, [status])
+
     const onSignInPress = () => {
         //validate
-        // setErrorMessage('');
-        // if (username.length === 0 || password.length === 0) {
-        //     setErrorMessage('Hãy điền tên đăng nhập/ mật khẩu');
-        //     return;
-        // }
-        // if (!validateUserName(username)) {
-        //     setErrorMessage("Tên đăng nhập không đúng");
-        //     return;
-        // }
+        setErrorMessage('');
+        if (username.length === 0 || password.length === 0) {
+            setErrorMessage('Hãy điền tên đăng nhập/ mật khẩu');
+            return;
+        }
+        if (!validateUserName(username)) {
+            setErrorMessage("Tên đăng nhập không đúng");
+            return;
+        }
 
-        // if (password.length < 8) {
-        //     setErrorMessage('Mật khẩu có độ dài lớn hơn 8 ký tự');
-        //     return;
-        // }
+        if (password.length < 8) {
+            setErrorMessage('Mật khẩu có độ dài lớn hơn 8 ký tự');
+            return;
+        }
 
-        //  console.warn('Log in');
-        // const reqbody = {
-        //     username: username,
-        //     password: password
-        // }
-        // Api.authApi.login(reqbody).then(data => {
-        //     console.log(data)
-        //     const {accessToken, refreshToken, role, username } = data.data.data;
-        //     localStorage.setItem("accessToken", accessToken);
-        //     localStorage.setItem("refreshToken", refreshToken);
-        //     localStorage.setItem("username", username);
-        //     // dispatch(setRole(role));
-        //     // dispatch(setUsername(username));
-            
-            navigation.navigate('Home');
-        // }).catch(err => {
-        //     const { message } = err.response.data;
-        //     setErrorMessage(message)
-        // }).finally()
-        
+        const reqbody = {
+            username: username,
+            password: password,
+        }
+
+        dispatch(getLoginInfo(reqbody));
+
     }
 
     const onForgotPassword = () => {
@@ -99,6 +105,7 @@ const LoginScreen = ({navigation}) => {
                         source={Logo}
                         resizeMode='contain'
                     />
+                    <Text style={{color: '#fff', marginBottom: 16}}>Ứng dụng dành riêng cho người bệnh</Text>
                     <CustomInput
                         value={username}
                         onChange={setUsername}
@@ -115,6 +122,8 @@ const LoginScreen = ({navigation}) => {
                         text='Đăng nhập'
                         onPress={onSignInPress}
                         type='PRIMARY'
+                        isLoading={status === ApiStatus.Loading}
+                        loadingColor='white'
                     />
 
                     <CustomButton

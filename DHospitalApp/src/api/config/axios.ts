@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ApiStatusCode } from "../../model/enum";
+import { ApiStatusCode } from "../../utils/enum";
 
 export const baseURL = 'https://datn-benhvien.onrender.com/api';
 
@@ -22,9 +22,9 @@ apiClient.interceptors.request.use(
     );
 
 let isRefreshing = false;
-let failedQueue: any[] = [];
+let failedQueue: { resolve: (value: unknown) => void; reject: (reason?: any) => void; config: any; }[] = [];
 
-const processQueue = (error: any, token = null) => {
+const processQueue = (error: unknown, token = null) => {
     failedQueue.forEach(async (prom) => {
         if (error) {
             prom.reject(error);

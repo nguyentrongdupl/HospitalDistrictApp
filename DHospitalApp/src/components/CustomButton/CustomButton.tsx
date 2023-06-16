@@ -1,10 +1,12 @@
 import * as React from 'react'
-import {StyleSheet, View, Text, TextInput, Pressable, TouchableOpacity} from 'react-native'
+import {StyleSheet, View, Text, TextInput, Pressable, TouchableOpacity, ActivityIndicator} from 'react-native'
 
 interface ICustomButtonProps{
     onPress: () => void,
     text: string,
     type?: string,
+    isLoading?: boolean;
+    loadingColor?: string;
 }
 
 const CustomButton = (props: ICustomButtonProps) => {
@@ -32,6 +34,12 @@ const CustomButton = (props: ICustomButtonProps) => {
         },
         text_TERTIARY: {
             color: 'gray'
+        },
+        insideContent: {
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center"
         }
     });
 
@@ -40,7 +48,10 @@ const CustomButton = (props: ICustomButtonProps) => {
             style={[buttonStyles.container, buttonStyles[`container_${props.type}`]]} 
             onPress={props.onPress}
         >
-            <Text style={[buttonStyles.text, buttonStyles[`text_${props.type}`]]}>{props.text}</Text>
+            <View style={buttonStyles.insideContent}>
+                {props.isLoading && <ActivityIndicator size="large" color={props.loadingColor} />}
+                <Text style={[buttonStyles.text, buttonStyles[`text_${props.type}`]]}>{props.text}</Text>
+            </View>
         </TouchableOpacity>
     )
 }
