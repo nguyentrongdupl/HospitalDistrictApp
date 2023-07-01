@@ -1,7 +1,7 @@
 import React from "react"
-import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity} from "react-native"
+import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from "react-native"
 
-export interface ICardProps{
+export interface ICardProps {
     imageSrc?: any;
     icon?: JSX.Element;
     title: string;
@@ -10,6 +10,52 @@ export interface ICardProps{
 }
 
 const Card = (props: ICardProps) => {
+
+    const deviceWidth = Math.round(Dimensions.get('window').width);
+    const radius = 20;
+    const styles = StyleSheet.create({
+        cardContainer: {
+            width: props.icon ? (0.5* deviceWidth - 25) : (deviceWidth - 25),
+            height: 200,
+            backgroundColor: "#fff",
+            borderRadius: radius,
+
+            shadowColor: "#000",
+            shadowOffset: {
+                width: 5,
+                height: 5,
+            },
+            shadowOpacity: 0.75,
+            shadowRadius: 5,
+            elevation: 9,
+
+        },
+        imageStyle: {
+            height: 130,
+            width: deviceWidth - 25,
+            borderTopLeftRadius: radius,
+            borderTopRightRadius: radius,
+            opacity: 0.9,
+        },
+        infoStyle: {
+            marginHorizontal: 10,
+            marginVertical: 5
+        },
+        titleStyle: {
+            fontSize: 18,
+            fontWeight: "700"
+        },
+        descriptionStyle: {
+            fontWeight: "400"
+        },
+        iconStyle: {
+            marginVertical: 20,
+            width: "100%",
+
+            display: "flex",
+            alignItems: "center",
+        }
+    })
     return (
         <View style={styles.cardContainer} >
             <TouchableOpacity onPress={() => props.onPress?.()}>
@@ -30,46 +76,6 @@ const Card = (props: ICardProps) => {
     )
 }
 
-const deviceWidth = Math.round(Dimensions.get('window').width);
-const radius = 20;
-const styles = StyleSheet.create({
-    cardContainer: {
-        width: deviceWidth -25,
-        height: 200,
-        backgroundColor: "#fff",
-        borderRadius: radius,
 
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 5,
-            height: 5,
-        },
-        shadowOpacity: 0.75,
-        shadowRadius: 5,
-        elevation: 9,
-
-    },
-    imageStyle: {
-        height: 130,
-        width: deviceWidth - 25,
-        borderTopLeftRadius: radius,
-        borderTopRightRadius: radius,
-        opacity: 0.9,
-    },
-    infoStyle: {
-        marginHorizontal: 10,
-        marginVertical: 5
-    },
-    titleStyle: {
-        fontSize: 20,
-        fontWeight: "700"
-    },
-    descriptionStyle: {
-        fontWeight: "400"
-    },
-    iconStyle: {
-
-    }
-})
 
 export default Card;

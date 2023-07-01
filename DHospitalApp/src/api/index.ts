@@ -1,5 +1,6 @@
 import axios from "axios";
 import apiClient, { baseURL } from "./config/axios";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const api = {
@@ -119,3 +120,55 @@ export const loginApi = (reqbody: any) =>  fetch(`${baseURL}/auth/login`, {
   .then(response => {
     return response;
   })
+
+  const getToken = async (key: string) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      if (value !== null) {
+        return value;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  export const ApiGet = async (url: string) => fetch(url, {
+    headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+        "Authorization": `Bearer ${ await getToken('accessToken')}`
+    },
+    method: "GET",
+  }).then(res =>res.json())
+  .then(response => {    
+    return response;
+  }).catch(err => console.log(err))
+
+  export const ApiPost = async (url: string, reqbody?: any) => fetch(url, {
+    headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+        "Authorization": `Bearer ${await getToken('accessToken')}`
+    },
+    method: "POST",
+    body: JSON.stringify(reqbody),
+  }).then(res =>res.json())
+  .then(response => {
+    return response;
+  })
+
+  export const post = (url : string, reqbody?: any) => {
+    return fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8", 
+        "Authorization": `Bearer ${getToken('accessToken')}`},
+      body: JSON.stringify(reqbody),
+    }).then(response => response.json())
+      .then(data => {
+        if(data.status === 403 && data.message === "TokenExpiredError") {
+          //clear localStorage
+          // navigate to login 
+        } else {
+          return data;
+        }
+      }).catch(err => console.log(err))
+  }

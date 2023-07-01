@@ -21,3 +21,31 @@ export enum ApiStatus {
     Success,
     Failed,
 }
+
+export enum DepartmentType {
+    tiepDon,
+    noiTongHop,
+    ngoai,
+    canLamSang,
+    san,
+    daLieu,
+    dongY,
+    truyenNhiem,
+    duoc,
+    nhi,
+    thanNhanTao
+}
+
+export enum DoctorRank{
+    thacSi,
+    tienSi,
+    PGSTS,
+    GSTS,
+    none
+}
+
+export enum DoctorPosition{
+    dean,
+    viceDean,
+    none
+}
