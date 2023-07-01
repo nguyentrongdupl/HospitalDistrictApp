@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ViewStyle, StyleProp } from 'react-native';
 import { Icon } from '@rneui/themed';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
@@ -8,7 +8,9 @@ interface MenuProps{
         icon: JSX.Element,
         title: string,
         description: string
-    }
+    },
+    style: StyleProp<ViewStyle>
+    
 }
 
 const MenuCard = (props: MenuProps) => {
@@ -22,7 +24,7 @@ const MenuCard = (props: MenuProps) => {
         description:{}
     })
     return(
-        <View style={menuStyle.root}>
+        <View style={[menuStyle.root, props.style]}>
             <View>
                 {props.item.icon}
             </View> 
