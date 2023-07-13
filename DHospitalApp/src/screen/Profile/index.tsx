@@ -1,16 +1,20 @@
 import * as React from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions } from "react-native"
+import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView } from "react-native"
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from 'react';
+import { getGender } from '../../utils/convert';
+import EditProfile from './EditProfile';
 
 const Profile = ({ navigation }: { navigation: any }) => {
     const {username} = useSelector((state: RootState) => state.user)
     const deviceWidth = Math.round(Dimensions.get('window').width);
 
     const [openEdit, setOpenEdit] = useState(false);
+
+    const { info } = useSelector((state:RootState) => state.user)
 
     const profileStyle = StyleSheet.create({
         imageContainer: {
@@ -95,37 +99,37 @@ const Profile = ({ navigation }: { navigation: any }) => {
         },
         {
             title: 'Ngày sinh:',
-            value: '30/04/1990'
+            value: info?.dateOfBirth
         },
         {
             title: 'Giới tính:',
-            value: 'Nam'
+            value: getGender(info?.gender!)
         },
         {
             title: 'Địa chỉ:',
-            value: "Hà Nội"
+            value: info?.address
         },
         {
             title: 'Căn cước công dân:',
-            value: ""
+            value: info?.identification
         },
         {
             title: 'Bảo hiểm y tế',
-            value: ""
+            value: info?.insurance
         },
     ]
     
     return(
-        <SafeAreaView>
+        <ScrollView>
             <View style={profileStyle.imageContainer}>
-                <Image style={profileStyle.image} source={require("../../../assets/niceView.jpg")} />
+                <Image style={profileStyle.image} source={{uri: info?.avatar}} />
                 <Text style={[profileStyle.title, {width: deviceWidth -25, marginHorizontal: 12, textAlign: "center"}]}>
-                    Nguyễn Văn A
+                    {info?.fullname}
                 </Text>
             </View>
             <View style={profileStyle.infoContainer}>
                 {personalInfomation.map((info) => (
-                    <View style={profileStyle.textInfoContainer}>
+                    <View key={info.title} style={profileStyle.textInfoContainer}>
                         <Text style={profileStyle.textInfo}>{info.title}</Text>
                         <Text style={profileStyle.textInfo}>{info.value}</Text>
                     </View>
@@ -145,7 +149,11 @@ const Profile = ({ navigation }: { navigation: any }) => {
                     <Text>Đăng xuất</Text>                
                 </TouchableOpacity>
             </View>
-        </SafeAreaView>
+            <EditProfile 
+                // profileInfo={undefined} 
+                openModal={openEdit} 
+                toggleModal={() => setOpenEdit(false) }            />
+        </ScrollView>
     )
 }
 

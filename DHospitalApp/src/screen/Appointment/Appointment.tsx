@@ -302,6 +302,7 @@ const Appointment = ({ navigation }: { navigation: any }) => {
                             <CustomListItem
                                 item={item}
                                 havePicture={false}
+                                selectable
                                 selected={item?.id === doctor?.id}
                                 onSelect={(item: any) => {
                                     if (item?.id === doctor?.id) setDoctor(undefined);
