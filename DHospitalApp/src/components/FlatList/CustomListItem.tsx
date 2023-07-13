@@ -6,12 +6,13 @@ import { CheckBox } from '@rneui/base';
 interface IListItemProps {
     item: any;
     havePicture?: boolean;
+    selectable?: boolean;
     selected?: boolean;
     onSelect? : (value: any) => void;
 }
 
 export const CustomListItem = (props: IListItemProps) => {
-    const { item, havePicture, selected, onSelect } = props;
+    const { item, havePicture, selectable, selected, onSelect } = props;
     const [expanded, setExpanded] = useState<boolean>(false);
     const [isSelected, setSelected] = useState<boolean>(false);
     useEffect(() => {
@@ -25,13 +26,15 @@ export const CustomListItem = (props: IListItemProps) => {
                     <Image source={{ uri: item.image }} style={styles.image} />
                 )}
                 <View style={styles.container}>
-                    <CheckBox 
-                        checked={isSelected}
-                        onPress={(e) => {
-                            // setSelection(!isSelected)
-                            onSelect?.(item)
-                        } }
-                    />
+                    {selectable && (
+                        <CheckBox 
+                            checked={isSelected}
+                            onPress={(e) => {
+                                // setSelection(!isSelected)
+                                onSelect?.(item)
+                            } }
+                        />
+                    )}
                     <View style={styles.textContainer}>
                         <Text style={styles.text}>{item.title}</Text>
                         <Text style={styles.text}>{item.subtitle}</Text>

@@ -12,7 +12,7 @@ interface CurrentUserState {
     status: ApiStatus;
 }
 
-interface IUserInfo {
+export interface IUserInfo {
   address: string;
   avatar: string;
   bloodPressureDiastolic: number;

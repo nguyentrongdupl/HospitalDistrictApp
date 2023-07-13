@@ -49,3 +49,9 @@ export enum DoctorPosition{
     viceDean,
     none
 }
+
+export enum ScheduleRequestStatus {
+    wait,
+    accpect,
+    reject
+  }

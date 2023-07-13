@@ -110,12 +110,15 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
                         value={username}
                         onChange={setUsername}
                         placeholder='Tên đăng nhập'
+                        showInput={true}
+                        secureTextEntry={false}
                     />
                     <CustomInput
                         value={password}
                         onChange={setPassword}
                         placeholder='Mật khẩu'
-                        secureTextEntry={true}
+                        showInput
+                        secureTextEntry
                     />
                     <Text style={loginStyle.errorMessage}>{errorMessage}</Text>
                     <CustomButton

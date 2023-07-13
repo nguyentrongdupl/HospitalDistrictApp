@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, Text, StyleSheet, Button, ScrollView, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, Button, ScrollView, Dimensions, Image } from 'react-native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Profile from '../Profile';
@@ -13,10 +13,12 @@ import CureHistory from '../CureHistory/CureHistory';
 import News from '../News/News';
 import Appointment from '../Appointment/Appointment';
 import Diseases from '../Diseases/Diseases';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getCurrentUserInfo } from '../../redux/reducer/userSlice';
-import { AppDispatch } from '../../redux/store';
+import { AppDispatch, RootState } from '../../redux/store';
 import { AppointmentList } from '../AppointmentList/AppointmentList';
+import { AntDesign } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 
 const deviceWidth = Math.round(Dimensions.get('window').width);
 const homeStyle = StyleSheet.create(
@@ -65,8 +67,41 @@ const homeStyle = StyleSheet.create(
       shadowOpacity: 0.75,
       shadowRadius: 5,
       elevation: 9,
-    },
 
+      position: "relative"
+    },
+    welcomeLogo: {
+      height: 150,
+      width: 150,
+
+      position: "absolute",
+      bottom: 0,
+      right: 20
+    },
+    infoContainer: {
+      width: deviceWidth - 25,
+      padding: 12,
+      marginHorizontal: 12,
+      marginTop: 20,
+      backgroundColor: "#fff",
+      borderRadius: 20,
+
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 5,
+        height: 5,
+      },
+      shadowOpacity: 0.75,
+      shadowRadius: 5,
+      elevation: 9,
+    },
+    basicInfoContainer: {
+      flexDirection: 'row',
+      marginLeft: 12
+    },
+    basicInfoTitle: {
+      width: 120,
+    }
   }
 )
 
@@ -113,6 +148,7 @@ function getTodayDatetoString() {
 };
 
 function HomeDisplayScreen({ navigation }: { navigation: any }) {
+  const { info } = useSelector((state: RootState) => state.user)
   const menuList = [
     {
       icon: <MaterialCommunityIcons name="clipboard-text-clock-outline" size={64} color="black" />,
@@ -133,7 +169,7 @@ function HomeDisplayScreen({ navigation }: { navigation: any }) {
       onPress: () => navigation.navigate('Appointment'),
     },
     {
-      icon: <MaterialCommunityIcons name="calendar-month-outline" size={64} color="black" />,
+      icon: <FontAwesome name="calendar-check-o" size={54} color="black" />,
       title: 'Danh sách lịch hẹn',
       description: 'Xem danh sách lịch hẹn',
       onPress: () => navigation.navigate('AppointmentList'),
@@ -145,20 +181,64 @@ function HomeDisplayScreen({ navigation }: { navigation: any }) {
       onPress: () => navigation.navigate('Diseases')
     },
   ]
+
+  const renderHealthInfo = () => {
+    const info = useSelector((state: RootState) => state.user.info)
+    const renderInfoValue = (value: string | number | undefined) => {
+      if (value === 0) return "-";
+      return value;
+    }
+    return (
+      <View>
+        <View style={homeStyle.basicInfoContainer}>
+          <Text style={homeStyle.basicInfoTitle}>Nhịp tim</Text>
+          <Text>{renderInfoValue(info?.heartRate)} bpm</Text>
+        </View>
+        <View style={homeStyle.basicInfoContainer}>
+          <Text style={homeStyle.basicInfoTitle}>Nhiệt độ cơ thể</Text>
+          <Text>{renderInfoValue(info?.temperature)} °C</Text>
+        </View>
+        <View style={homeStyle.basicInfoContainer}>
+          <Text style={homeStyle.basicInfoTitle}>Huyết áp</Text>
+          <Text>{`${renderInfoValue(info?.bloodPressureSystolic)}/${renderInfoValue(info?.bloodPressureDiastolic)}`}</Text>
+        </View>
+        <View style={homeStyle.basicInfoContainer}>
+          <Text style={homeStyle.basicInfoTitle}>Đường huyết</Text>
+          <Text>{renderInfoValue(info?.glucose)} mmHg</Text>
+        </View>
+        <View style={homeStyle.basicInfoContainer}>
+          <Text style={homeStyle.basicInfoTitle}>Chiều cao</Text>
+          <Text>{renderInfoValue(info?.height)} m</Text>
+        </View>
+        <View style={homeStyle.basicInfoContainer}>
+          <Text style={homeStyle.basicInfoTitle}>Cân nặng</Text>
+          <Text>{renderInfoValue(info?.weight)} kg</Text>
+        </View>
+      </View>
+    )
+  }
+
   return (
     <ScrollView contentContainerStyle={homeStyle.root}>
       <View style={homeStyle.welcomecontainer}>
-        <Text>{getTodayDatetoString()}</Text>
-        <Text>Xin chào, Nguyễn Văn A</Text>
+        <Text style={{ marginBottom: 20 }}>{getTodayDatetoString()}</Text>
+        <Text>Xin chào, {info?.fullname}</Text>
+        <Image
+          style={homeStyle.welcomeLogo}
+          source={require("../../assets/image/welcome-logo.png")}
+        />
       </View>
-      <View>
-        <Text>Chỉ số sức khỏe của bệnh nhân</Text>
+      <View style={homeStyle.infoContainer}>
+        <Text>Các chỉ số quan trọng của cơ thể</Text>
+        {renderHealthInfo()}
       </View>
-      <View>
+      <View style={[homeStyle.infoContainer, { flexDirection: "row", justifyContent: "space-between" }]}>
         <Text>Danh sách lịch hẹn hôm nay</Text>
+        <AntDesign name="arrowright" size={24} color="black" onPress={() => navigation.navigate("AppointmentList")} />
       </View>
-      <View>
+      <View style={[homeStyle.infoContainer, { flexDirection: "row", justifyContent: "space-between" }]}>
         <Text>Thông tin tư vấn</Text>
+        <AntDesign name="arrowright" size={24} color="black" />
       </View>
       {menuList.map((menu, index) => (
         <View key={index} style={homeStyle.contentContainer}>
@@ -195,12 +275,12 @@ const HomeScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
   React.useEffect(() => {
     dispatch(getCurrentUserInfo());
-  },[])
+  }, [])
 
   return (
     <Tab.Navigator screenOptions={{
       tabBarHideOnKeyboard: true
-   }}>
+    }}>
       <Tab.Screen
         name="HomePage"
         component={HomeStackScreen}
