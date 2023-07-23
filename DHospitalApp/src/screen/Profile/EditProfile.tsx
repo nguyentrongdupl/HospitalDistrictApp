@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, View, Text, Pressable, StyleSheet, Dimensions } from 'react-native';
+import { Modal, View, Text, Pressable, StyleSheet, Dimensions, TextInput, Platform } from 'react-native';
 import { CustomInput } from '../../components';
 import { IUserInfo } from '../../redux/reducer/userSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
+import { Dropdown } from 'react-native-element-dropdown';
+import DateTimePickerAndroid from '@react-native-community/datetimepicker';
 
 interface IEditProfileProps {
     // profileInfo: IUserInfo;
@@ -12,30 +14,101 @@ interface IEditProfileProps {
 }
 
 const EditProfile = (props: IEditProfileProps) => {
+    const [isFocus, setIsFocus] = useState(false);
+    const [pickedDate, setPickedDate] = useState('');
+    const [showPicker, setShowPicker] = useState(false);
+    const [date, setDate] = useState(new Date());
+
     const [fullname, setFullName] = useState<string>("");
-    const [gender, setGender] = useState<number>(0);
+    const [gender, setGender] = useState<string>();
     const [address, setAddress] = useState<string>("");
     const [identification, setIdentification] = useState<string>("");
 
     const info = useSelector((state: RootState) => state.user.info);
 
+    const toggleDatePicker = () => {
+        setShowPicker(!showPicker);
+    }
+
+    const onChangeDate = ({ type }: any, selectedDate: any) => {
+        if (type == "set") {
+            const currentDate = selectedDate;
+            setDate(currentDate);
+
+            if (Platform.OS === "android") {
+                toggleDatePicker();
+                setPickedDate(currentDate.toDateString());
+            }
+        } else {
+            toggleDatePicker();
+        }
+    }
+
     useEffect(() => {
+        console.log("date: ",info?.dateOfBirth);
+        console.log("date 2: ",new Date("14/07/1985"));
         setFullName(info?.fullname!);
-        setGender(info?.gender!);
+        // setDate(new Date(info?.dateOfBirth || ""))
+        // setPickedDate(new Date(info?.dateOfBirth || "").toString())
+        setGender(info?.gender!.toString());
         setAddress(info?.address!);
         setIdentification(info?.identification!);
     }, [])
 
     const genderOptions = [
         {
-            value: 0, 
+            value: "0",
             label: "Nam"
         },
         {
-            value: 1, 
+            value: "1",
             label: "Nữ"
         },
     ]
+
+    const renderDatePicker = () => {
+        return (
+            <View>
+                <Text>Ngày sinh </Text>
+                {showPicker && (
+                    <DateTimePickerAndroid
+                        mode="date"
+                        display="spinner"
+                        value={date}
+                        onChange={onChangeDate}
+                    />
+                )}
+                <Pressable onPress={toggleDatePicker}>
+                    <View
+                        style={{
+                            backgroundColor: '#fff',
+                            width: '100%',
+
+                            borderColor: '#e8e8e8',
+                            borderWidth: 1,
+                            borderRadius: 5,
+
+                            paddingHorizontal: 10,
+                            marginVertical: 5,
+
+                        }}
+                    >
+                        <TextInput
+                            placeholder="Chọn ngày sinh"
+                            value={pickedDate}
+                            onChangeText={setPickedDate}
+                            editable={false}
+                            style={{
+                                height: 42,
+                                color: "black"
+                            }}
+                        />
+                    </View>
+
+                </Pressable>
+            </View>
+        )
+    }
 
     return (
         <Modal
@@ -58,16 +131,28 @@ const EditProfile = (props: IEditProfileProps) => {
                                     value={fullname}
                                 />
                             </View>
-                            <View>
-                                <Text>Ngày sinh</Text>
-                                <CustomInput
-                                    value={''}
-                                />
-                            </View>
+                            {renderDatePicker()}
                             <View>
                                 <Text>Giới tính</Text>
-                                <CustomInput
-                                    value={''}
+                                <Dropdown
+                                    style={[DropdownStyles.dropdown, isFocus && { borderColor: 'blue' }]}
+                                    placeholderStyle={DropdownStyles.placeholderStyle}
+                                    selectedTextStyle={DropdownStyles.selectedTextStyle}
+                                    inputSearchStyle={DropdownStyles.inputSearchStyle}
+                                    iconStyle={DropdownStyles.iconStyle}
+                                    data={genderOptions}
+                                    maxHeight={300}
+                                    labelField="label"
+                                    valueField="value"
+                                    placeholder={!isFocus ? 'Chọn Khoa' : '...'}
+                                    searchPlaceholder="Search..."
+                                    value={gender}
+                                    onFocus={() => setIsFocus(true)}
+                                    onBlur={() => setIsFocus(false)}
+                                    onChange={(item: { value: string, label: string }) => {
+                                        setGender(item.value);
+                                        setIsFocus(false);
+                                    }}
                                 />
                             </View>
                             <View>
@@ -84,12 +169,16 @@ const EditProfile = (props: IEditProfileProps) => {
                             </View>
 
                         </View>
-                        <View>
-
+                        <View style={{flexDirection: "row", gap: 40}}>
                             <Pressable
                                 style={[styles.button, styles.buttonClose]}
                                 onPress={() => props?.toggleModal?.()}>
                                 <Text style={styles.textStyle}>Hủy</Text>
+                            </Pressable>
+                            <Pressable
+                                style={[styles.button, styles.buttonOpen]}
+                                onPress={() => props?.toggleModal?.()}>
+                                <Text style={styles.textStyle}>Lưu</Text>
                             </Pressable>
                         </View>
                     </View>
@@ -150,4 +239,44 @@ const styles = StyleSheet.create({
     titleText: {
         fontWeight: "600",
     }
+});
+
+const DropdownStyles = StyleSheet.create({
+    container: {
+        backgroundColor: 'white',
+
+    },
+    dropdown: {
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+    },
+    icon: {
+        marginRight: 5,
+    },
+    label: {
+        position: 'absolute',
+        backgroundColor: 'white',
+        left: 22,
+        top: 8,
+        zIndex: 999,
+        paddingHorizontal: 8,
+        fontSize: 14,
+    },
+    placeholderStyle: {
+        fontSize: 16,
+    },
+    selectedTextStyle: {
+        fontSize: 16,
+    },
+    iconStyle: {
+        width: 20,
+        height: 20,
+    },
+    inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+    },
 });

@@ -1,17 +1,15 @@
-import * as React from 'react'
-import { StyleSheet, Text, View, Image, useWindowDimensions, StatusBar } from 'react-native';
+import * as React from 'react';
+import { Image, StatusBar, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 // import Logo from '../../../assets/images/logobenhvien.png'
-import Logo from '../../../assets/images/logobenhvien.png'
-import { CustomInput } from '../../components/CustomInput/CustomInput';
-import { validateUserName } from '../../utils/validate';
-import { CustomButton } from '../../components';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Api from '../../api';
-import { AccountRole, ApiStatus } from '../../utils/enum';
-import { baseURL } from '../../api/config/axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { setRole, setUsername,setStatus, getLoginInfo} from '../../redux/reducer';
-import { AppDispatch, RootState} from '../../redux/store';
+import Logo from '../../../assets/images/logobenhvien.png';
+import { CustomButton } from '../../components';
+import { CustomInput } from '../../components/CustomInput/CustomInput';
+import { getLoginInfo, setStatus } from '../../redux/reducer';
+import { AppDispatch, RootState } from '../../redux/store';
+import { AccountRole, ApiStatus } from '../../utils/enum';
+import { validateUserName } from '../../utils/validate';
 
 const LoginScreen = ({navigation}: {navigation: any}) => {
     const { height } = useWindowDimensions();

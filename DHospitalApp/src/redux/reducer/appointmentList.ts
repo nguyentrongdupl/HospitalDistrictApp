@@ -37,9 +37,7 @@ export interface IAppointmentListReq{
 export const getAppointmentList = createAsyncThunk(
     "appointmentList/get",
     async(req: IAppointmentListReq) => {
-        const res = await ApiPost(`${baseURL}/schedule/getlistrequestmedical`, req);
-        console.log(res.data);
-        
+        const res = await ApiPost(`${baseURL}/schedule/getlistrequestmedical`, req);        
         return res.data;
     }
 )
