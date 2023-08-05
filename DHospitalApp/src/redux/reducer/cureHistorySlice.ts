@@ -41,9 +41,7 @@ export interface ICureHistoryListReq{
 export const getCureHistoryList = createAsyncThunk(
     "cureHistoryList/get",
     async(req: ICureHistoryListReq) => {
-        const res = await ApiPost(`${baseURL}/healthcare/gethistorymedical`, req);
-        console.log(res.data);
-        
+        const res = await ApiPost(`${baseURL}/healthcare/gethistorymedical`, req);        
         return res.data;
     }
 )

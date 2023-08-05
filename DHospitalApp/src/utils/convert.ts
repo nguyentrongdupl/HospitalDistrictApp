@@ -34,3 +34,8 @@ export const getDatestringtoMMDDYYYY = (str: string) => {
     var dateString = new Date(str);
     return ((dateString.getMonth() > 8) ? (dateString.getMonth() + 1) : ('0' + (dateString.getMonth() + 1))) + '/' + ((dateString.getDate() > 9) ? dateString.getDate() : ('0' + dateString.getDate())) + '/' + dateString.getFullYear()
 }
+
+export const getMMDDYYYY = (str: string) => {
+    let arr = str.split("/");
+    return(`0${arr[1]}/0${arr[0]}/${arr[2]}`);
+}

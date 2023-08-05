@@ -229,7 +229,6 @@ const style = StyleSheet.create({
     },
     basicInfoContainer: {
         width: deviceWidth - 52,
-        backgroundColor: "red",
         flexDirection: 'row',
         height: "auto",
         marginLeft: 12,

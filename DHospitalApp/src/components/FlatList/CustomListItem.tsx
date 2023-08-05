@@ -20,7 +20,7 @@ export const CustomListItem = (props: IListItemProps) => {
     },[selected])
 
     return (
-        <Pressable style={styles.wrap} >
+        <Pressable style={[styles.wrap, {width: selectable ? deviceWidth-40 : deviceWidth -20}]} >
             <View style={styles.container}>
                 {havePicture && (
                     <Image source={{ uri: item.image }} style={styles.image} />
@@ -62,7 +62,7 @@ const deviceWidth = Math.round(Dimensions.get('window').width);
 
 const styles = StyleSheet.create({
     wrap: {
-        width: deviceWidth -20 ,
+        // width: deviceWidth -40 ,
         
         borderColor: '#ccc', borderWidth: 1, marginVertical: 5, 
         marginHorizontal: 10, 

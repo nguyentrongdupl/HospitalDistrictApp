@@ -249,12 +249,12 @@ function HomeStackScreen() {
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen name='Trang chủ' component={HomeDisplayScreen} />
-      <HomeStack.Screen name='History' component={CureHistory} />
+      <HomeStack.Screen options={{title: "Lịch sử khám"}}name='History' component={CureHistory} />
       <HomeStack.Screen name='News' component={News} />
-      <HomeStack.Screen name='Appointment' component={Appointment} />
-      <HomeStack.Screen name='AppointmentList' component={AppointmentList} />
+      <HomeStack.Screen options={{title: "Đặt lịch khám"}}name='Appointment' component={Appointment} />
+      <HomeStack.Screen options={{title: "Danh sách lịch khám"}} name='AppointmentList' component={AppointmentList} />
       <HomeStack.Screen name='Diseases' component={Diseases} />
-      <HomeStack.Screen name='Details' component={CureHistoryDetails} />
+      <HomeStack.Screen options={{title: "Chi tiết lịch sử khám"}}name='Details' component={CureHistoryDetails} />
     </HomeStack.Navigator>
   );
 }

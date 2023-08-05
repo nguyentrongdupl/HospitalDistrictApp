@@ -45,8 +45,6 @@ const EditProfile = (props: IEditProfileProps) => {
     }
 
     useEffect(() => {
-        console.log("date: ",info?.dateOfBirth);
-        console.log("date 2: ",new Date("14/07/1985"));
         setFullName(info?.fullname!);
         // setDate(new Date(info?.dateOfBirth || ""))
         // setPickedDate(new Date(info?.dateOfBirth || "").toString())

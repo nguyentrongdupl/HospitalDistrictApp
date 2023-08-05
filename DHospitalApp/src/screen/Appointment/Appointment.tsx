@@ -12,7 +12,7 @@ import { Dictionary } from "@reduxjs/toolkit";
 import { Dropdown } from "react-native-element-dropdown";
 import { CustomListItem } from "../../components/FlatList/CustomListItem";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getDatestringtoMMDDYYYY, getDoctorPosition, getDoctorRank, getGender } from "../../utils/convert";
+import { getDatestringtoMMDDYYYY, getDoctorPosition, getDoctorRank, getGender, getMMDDYYYY } from "../../utils/convert";
 
 const deviceWidth = Math.round(Dimensions.get('window').width);
 
@@ -124,7 +124,7 @@ const Appointment = ({ navigation }: { navigation: any }) => {
 
             if (Platform.OS === "android") {
                 toggleDatePicker();
-                setPickedDate(currentDate.toDateString());
+                setPickedDate(currentDate.toLocaleString().split(", ")[1]);
             }
         } else {
             toggleDatePicker();
@@ -329,6 +329,7 @@ const Appointment = ({ navigation }: { navigation: any }) => {
                 <View style={[style.infoContainer, style.personalInfo]}>
                     <Text style={style.textLine}>{`Họ và tên: ${info?.fullname}`}</Text>
                     <Text style={style.textLine}>{`Giới tính: ${getGender(info?.gender!)}`}</Text>
+                    <Text style={style.textLine}>{`Ngày sinh: ${info?.dateOfBirth}`}</Text>
                     <Text style={style.textLine}>{`Địa chỉ: ${info?.address}`}</Text>
                     <Text style={style.textLine}>{`Số điện thoại: ${info?.phonenumber}`}</Text>
                 </View>
@@ -401,7 +402,7 @@ const Appointment = ({ navigation }: { navigation: any }) => {
     const handleSubmit = () => {
         const reqBody = {
             departmentId: pickedDepartment ? pickedDepartment : "",
-            appointmentDate: getDatestringtoMMDDYYYY(pickedDate),
+            appointmentDate: getMMDDYYYY(pickedDate),
             initialSymptom: reason.trim(),
             doctorId: doctor?.id
         }

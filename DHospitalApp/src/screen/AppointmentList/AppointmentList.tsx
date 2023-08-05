@@ -62,6 +62,7 @@ export const AppointmentList = () => {
                             <Text>{`Khoa: ${appt.departmentName}`}</Text>
                             <Text>{`Chức vụ: ${getDoctorPosition(appt.doctorPosition)}`}</Text>
                             <Text>{`Học vấn: ${getDoctorRank(appt.doctorRank)}`}</Text>
+                            <Text>{`Lý do: ${appt.initialSymptom}`}</Text>
                         </View>
                 })
             });
