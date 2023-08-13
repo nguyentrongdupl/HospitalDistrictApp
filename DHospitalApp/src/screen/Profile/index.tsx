@@ -1,24 +1,28 @@
 import * as React from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView } from "react-native"
+import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView, RefreshControl } from "react-native"
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../redux/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from 'react';
 import { getGender } from '../../utils/convert';
 import EditProfile from './EditProfile';
+import { getCurrentUserInfo, setStatus } from '../../redux/reducer/userSlice';
+import { ApiStatus } from '../../utils/enum';
 
 const Profile = ({ navigation }: { navigation: any }) => {
-    const {username} = useSelector((state: RootState) => state.user)
+    const { username } = useSelector((state: RootState) => state.user)
     const deviceWidth = Math.round(Dimensions.get('window').width);
 
     const [openEdit, setOpenEdit] = useState(false);
+    const [refreshing, setRefreshing] = React.useState(false);
 
-    const { info } = useSelector((state:RootState) => state.user)
+    const { info, status } = useSelector((state: RootState) => state.user)
+    const dispatch = useDispatch<AppDispatch>();
 
     const profileStyle = StyleSheet.create({
         imageContainer: {
-            width: deviceWidth -25,
+            width: deviceWidth - 25,
             marginHorizontal: 12,
             // height: deviceWidth,
             // borderRadius: deviceWidth * 0.25,
@@ -27,7 +31,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
             paddingTop: 40,
             alignItems: 'center',
             // backgroundColor: "green",
-            
+
             // opacity: 0.7
         },
         image: {
@@ -43,10 +47,10 @@ const Profile = ({ navigation }: { navigation: any }) => {
             marginVertical: 8
         },
         infoContainer: {
-            width: deviceWidth -25,
+            width: deviceWidth - 25,
             marginHorizontal: 12,
             marginTop: 20,
-            
+
             // borderColor: "black",
             // borderWidth: 1,
             borderRadius: 20,
@@ -54,9 +58,9 @@ const Profile = ({ navigation }: { navigation: any }) => {
             paddingVertical: 20,
             marginBottom: 20,
             backgroundColor: "#fff",
-            
+
         },
-        textInfoContainer:{
+        textInfoContainer: {
             display: 'flex',
             flexDirection: 'row',
             justifyContent: "space-between",
@@ -76,11 +80,11 @@ const Profile = ({ navigation }: { navigation: any }) => {
             alignItems: 'center',
             justifyContent: "center",
             borderRadius: 8,
-            
+
             // backgroundColor: 'blue',
             color: 'white'
         },
-        logout:{
+        logout: {
             height: 40,
             width: 150,
             backgroundColor: "green",
@@ -106,6 +110,14 @@ const Profile = ({ navigation }: { navigation: any }) => {
             value: getGender(info?.gender!)
         },
         {
+            title: 'Điện thoại',
+            value: info?.phonenumber
+        },
+        {
+            title: 'Email:',
+            value: info?.email,
+        },
+        {
             title: 'Địa chỉ:',
             value: info?.address
         },
@@ -117,13 +129,28 @@ const Profile = ({ navigation }: { navigation: any }) => {
             title: 'Bảo hiểm y tế',
             value: info?.insurance
         },
-    ]
-    
-    return(
-        <ScrollView>
+    ];
+
+    React.useEffect(() => {
+        if (status === ApiStatus.Success) {
+            dispatch(setStatus(ApiStatus.None))
+            setRefreshing(false);
+        }
+    }, [status])
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        dispatch(getCurrentUserInfo());
+    }, [status]);
+
+    return (
+        <ScrollView
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }>
             <View style={profileStyle.imageContainer}>
-                <Image style={profileStyle.image} source={{uri: info?.avatar}} />
-                <Text style={[profileStyle.title, {width: deviceWidth -25, marginHorizontal: 12, textAlign: "center"}]}>
+                <Image style={profileStyle.image} source={{ uri: info?.avatar }} />
+                <Text style={[profileStyle.title, { width: deviceWidth - 25, marginHorizontal: 12, textAlign: "center" }]}>
                     {info?.fullname}
                 </Text>
             </View>
@@ -135,7 +162,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
                     </View>
                 ))}
             </View>
-            <View style={{flexDirection: 'row', justifyContent: "space-around", marginTop: 40}}>
+            <View style={{ flexDirection: 'row', justifyContent: "space-around", marginTop: 40 }}>
                 <TouchableOpacity style={profileStyle.editBtn} onPress={() => setOpenEdit(true)}>
                     <Text>Chỉnh sửa thông tin </Text>
                 </TouchableOpacity>
@@ -146,13 +173,13 @@ const Profile = ({ navigation }: { navigation: any }) => {
                         AsyncStorage.clear();
                     }}
                 >
-                    <Text>Đăng xuất</Text>                
+                    <Text>Đăng xuất</Text>
                 </TouchableOpacity>
             </View>
-            <EditProfile 
+            <EditProfile
                 // profileInfo={undefined} 
-                openModal={openEdit} 
-                toggleModal={() => setOpenEdit(false) }            />
+                openModal={openEdit}
+                toggleModal={() => setOpenEdit(false)} />
         </ScrollView>
     )
 }

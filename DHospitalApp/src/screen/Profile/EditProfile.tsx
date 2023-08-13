@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, View, Text, Pressable, StyleSheet, Dimensions, TextInput, Platform } from 'react-native';
+import { Modal, View, Text, Pressable, StyleSheet, Dimensions, TextInput, Platform, ToastAndroid, ScrollView } from 'react-native';
 import { CustomInput } from '../../components';
-import { IUserInfo } from '../../redux/reducer/userSlice';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import { IUserInfo, getCurrentUserInfo, setResult, setStatus, updateUserInfo } from '../../redux/reducer/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../redux/store';
 import { Dropdown } from 'react-native-element-dropdown';
 import DateTimePickerAndroid from '@react-native-community/datetimepicker';
+import moment from 'moment-timezone';
+import { ApiStatus } from '../../utils/enum';
 
 interface IEditProfileProps {
     // profileInfo: IUserInfo;
@@ -21,10 +23,14 @@ const EditProfile = (props: IEditProfileProps) => {
 
     const [fullname, setFullName] = useState<string>("");
     const [gender, setGender] = useState<string>();
+    const [phoneNumber, setPhonenumber] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
     const [address, setAddress] = useState<string>("");
     const [identification, setIdentification] = useState<string>("");
 
     const info = useSelector((state: RootState) => state.user.info);
+    const { status, result } = useSelector((state: RootState) => state.user)
+    const dispatch = useDispatch<AppDispatch>();
 
     const toggleDatePicker = () => {
         setShowPicker(!showPicker);
@@ -46,12 +52,16 @@ const EditProfile = (props: IEditProfileProps) => {
 
     useEffect(() => {
         setFullName(info?.fullname!);
-        // setDate(new Date(info?.dateOfBirth || ""))
-        // setPickedDate(new Date(info?.dateOfBirth || "").toString())
+        setDate(moment.utc(info?.dateOfBirth, 'DD-MM-YYYY').local().toDate())
+        setPickedDate(moment.utc(info?.dateOfBirth, 'DD-MM-YYYY').local().format("DD/MM/YYYY"))
         setGender(info?.gender!.toString());
+        setPhonenumber(info?.phonenumber!);
+        setEmail(info?.email!);
         setAddress(info?.address!);
         setIdentification(info?.identification!);
     }, [])
+
+
 
     const genderOptions = [
         {
@@ -108,6 +118,43 @@ const EditProfile = (props: IEditProfileProps) => {
         )
     }
 
+    const HandleEditInfo =() => {
+        const reqbody = {
+            fullname: fullname,
+            email: email || '',
+            gender: gender || "",
+            phonenumber: phoneNumber,
+            address: address || '',
+            dateOfBirth: moment.utc(info?.dateOfBirth, 'DD-MM-YYYY').local().format("MM/DD/YYYY"),
+            identification: identification
+        }
+        dispatch(updateUserInfo(reqbody));        
+    }
+
+    useEffect(() => {
+        if(status === ApiStatus.Success){
+            if(result){
+                dispatch(setResult(undefined));
+                dispatch(setStatus(ApiStatus.None));
+                dispatch(getCurrentUserInfo());
+                ToastAndroid.showWithGravity(
+                    'Cập nhật thông tin thành công',
+                    ToastAndroid.SHORT,
+                    ToastAndroid.TOP,
+                );
+
+            }
+            
+        }
+        if (status === ApiStatus.Failed) {
+            ToastAndroid.showWithGravity(
+                'Cập nhật thông tin thất bại',
+                ToastAndroid.SHORT,
+                ToastAndroid.TOP,
+            );
+        }
+    }, [status])
+
     return (
         <Modal
             animationType="slide"
@@ -115,10 +162,8 @@ const EditProfile = (props: IEditProfileProps) => {
             visible={props?.openModal}
             onRequestClose={() => {
                 props?.toggleModal?.();
-                // Alert.alert('Modal has been closed.');
-                // setModalVisible(!modalVisible);
             }}>
-            <View style={{ height: deviceHeight, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+            <ScrollView style={{ height: deviceHeight, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <Text style={[styles.modalText, styles.titleText]}>Chỉnh sửa thông tin</Text>
@@ -127,6 +172,7 @@ const EditProfile = (props: IEditProfileProps) => {
                                 <Text>Họ và tên</Text>
                                 <CustomInput
                                     value={fullname}
+                                    onChange={setFullName}
                                 />
                             </View>
                             {renderDatePicker()}
@@ -154,15 +200,31 @@ const EditProfile = (props: IEditProfileProps) => {
                                 />
                             </View>
                             <View>
+                                <Text>Số điện thoại</Text>
+                                <CustomInput
+                                    value={phoneNumber}
+                                    onChange={setPhonenumber}
+                                />
+                            </View>
+                            <View>
+                                <Text>Email</Text>
+                                <CustomInput
+                                    value={email}
+                                    onChange={setEmail}
+                                />
+                            </View>
+                            <View>
                                 <Text>Địa chỉ</Text>
                                 <CustomInput
                                     value={address}
+                                    onChange={setAddress}
                                 />
                             </View>
                             <View>
                                 <Text>Căn cước công dân: </Text>
                                 <CustomInput
                                     value={identification}
+                                    onChange={setIdentification}
                                 />
                             </View>
 
@@ -175,13 +237,16 @@ const EditProfile = (props: IEditProfileProps) => {
                             </Pressable>
                             <Pressable
                                 style={[styles.button, styles.buttonOpen]}
-                                onPress={() => props?.toggleModal?.()}>
+                                onPress={() => {
+                                    props?.toggleModal?.();
+                                    HandleEditInfo();
+                                }}>
                                 <Text style={styles.textStyle}>Lưu</Text>
                             </Pressable>
                         </View>
                     </View>
                 </View>
-            </View>
+            </ScrollView>
         </Modal>
     )
 }
@@ -220,7 +285,7 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     buttonOpen: {
-        backgroundColor: '#F194FF',
+        backgroundColor: 'green',
     },
     buttonClose: {
         backgroundColor: '#2196F3',

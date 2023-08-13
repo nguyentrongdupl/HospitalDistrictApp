@@ -226,10 +226,6 @@ function HomeDisplayScreen({ navigation }: { navigation: any }) {
         <Text>Danh sách lịch hẹn hôm nay</Text>
         <AntDesign name="arrowright" size={24} color="black" onPress={() => navigation.navigate("AppointmentList")} />
       </View>
-      <View style={[homeStyle.infoContainer, { flexDirection: "row", justifyContent: "space-between" }]}>
-        <Text>Thông tin tư vấn</Text>
-        <AntDesign name="arrowright" size={24} color="black" />
-      </View>
       {menuList.map((menu, index) => (
         <View key={index} style={homeStyle.contentContainer}>
           <Card

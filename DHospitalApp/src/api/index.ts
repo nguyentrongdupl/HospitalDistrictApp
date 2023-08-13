@@ -155,6 +155,18 @@ export const loginApi = (reqbody: any) =>  fetch(`${baseURL}/auth/login`, {
     return response;
   })
 
+  export const ApiPut = async (url: string, reqbody?: any) => fetch(url, {
+    headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+        "Authorization": `Bearer ${await getToken('accessToken')}`
+    },
+    method: "PUT",
+    body: JSON.stringify(reqbody),
+  }).then(res =>res.json())
+  .then(response => {
+    return response;
+  })
+
   export const post = (url : string, reqbody?: any) => {
     return fetch(url, {
       method: "POST",

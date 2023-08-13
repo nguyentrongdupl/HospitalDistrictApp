@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { Image, StatusBar, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
-// import Logo from '../../../assets/images/logobenhvien.png'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
-import Logo from '../../../assets/images/logobenhvien.png';
+import Logo from '../../../assets/images/logo.png';
 import { CustomButton } from '../../components';
 import { CustomInput } from '../../components/CustomInput/CustomInput';
 import { getLoginInfo, setStatus } from '../../redux/reducer';
