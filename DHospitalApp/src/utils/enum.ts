@@ -36,7 +36,7 @@ export enum DepartmentType {
     thanNhanTao
 }
 
-export enum DoctorRank{
+export enum DoctorRank {
     thacSi,
     tienSi,
     PGSTS,
@@ -44,7 +44,7 @@ export enum DoctorRank{
     none
 }
 
-export enum DoctorPosition{
+export enum DoctorPosition {
     dean,
     viceDean,
     none
@@ -54,4 +54,40 @@ export enum ScheduleRequestStatus {
     wait,
     accpect,
     reject
+}
+
+export enum TypeAppointmentSchedule {
+    khamTheoYeuCau,
+    khamThuong,
+    khamTheoBHYT,
+    khamTheoChiDinh,
+}
+
+export const MappingTypeAppointmentSchedule = {
+    [TypeAppointmentSchedule.khamTheoYeuCau]: 'Khám theo yêu cầu',
+    [TypeAppointmentSchedule.khamThuong]: 'Khám thường',
+    [TypeAppointmentSchedule.khamTheoBHYT]: 'Khám theo BHYT',
+    [TypeAppointmentSchedule.khamTheoChiDinh]: 'Khám theo chỉ định',
+}
+
+export enum TypeOfTest {
+    sinhHoa,
+    dongMau,
+    huyetHoc,
+    nuocTieu,
+    sieuAm,
+    dienTim,
+    chupXQuang,
+    chupCT
+}
+
+export const TestList = {
+    [TypeOfTest.sinhHoa]: "Xét nghiệm sinh hóa",
+    [TypeOfTest.dongMau]: "Xét nghiệm đông máu",
+    [TypeOfTest.huyetHoc]: "Xét nghiệm máu",
+    [TypeOfTest.nuocTieu]: "Xét nghiệm nước tiểu",
+    [TypeOfTest.sieuAm]: "Siêu âm",
+    [TypeOfTest.dienTim]: "Điện tâm đồ (Điện tim)",
+    [TypeOfTest.chupXQuang]: "Chụp X quang",
+    [TypeOfTest.chupCT]: "Chụp cắt lớp vi tính (CT)",
   }

@@ -19,6 +19,7 @@ import { AppDispatch, RootState } from '../../redux/store';
 import { AppointmentList } from '../AppointmentList/AppointmentList';
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
+import CureHistoryDetails from '../CureHistory/CureHistoryDetails';
 
 const deviceWidth = Math.round(Dimensions.get('window').width);
 const homeStyle = StyleSheet.create(
@@ -105,17 +106,6 @@ const homeStyle = StyleSheet.create(
   }
 )
 
-function DetailsScreen() {
-  return (
-    <View style={{
-      flex: 1,
-      //   justifyContent: 'center', 
-      //   alignItems: 'center' 
-    }}>
-      <Text>Details!</Text>
-    </View>
-  );
-}
 
 function getWeekdayString(day: number) {
   switch (day) {
@@ -156,12 +146,12 @@ function HomeDisplayScreen({ navigation }: { navigation: any }) {
       description: 'Xem lịch sử khám',
       onPress: () => navigation.navigate('History')
     },
-    {
-      icon: <MaterialCommunityIcons name="newspaper-variant-multiple-outline" size={64} color="black" />,
-      title: 'Tin tức',
-      description: 'Cung cấp các thông tin sức khỏe',
-      onPress: () => navigation.navigate('News')
-    },
+    // {
+    //   icon: <MaterialCommunityIcons name="newspaper-variant-multiple-outline" size={64} color="black" />,
+    //   title: 'Tin tức',
+    //   description: 'Cung cấp các thông tin sức khỏe',
+    //   onPress: () => navigation.navigate('News')
+    // },
     {
       icon: <MaterialCommunityIcons name="calendar-month-outline" size={64} color="black" />,
       title: 'Đặt lịch khám',
@@ -174,12 +164,12 @@ function HomeDisplayScreen({ navigation }: { navigation: any }) {
       description: 'Xem danh sách lịch hẹn',
       onPress: () => navigation.navigate('AppointmentList'),
     },
-    {
-      icon: <FontAwesome5 name="bacterium" size={64} color="black" />,
-      title: 'Bệnh',
-      description: 'Thông tin các loại bệnh',
-      onPress: () => navigation.navigate('Diseases')
-    },
+    // {
+    //   icon: <FontAwesome5 name="bacterium" size={64} color="black" />,
+    //   title: 'Bệnh',
+    //   description: 'Thông tin các loại bệnh',
+    //   onPress: () => navigation.navigate('Diseases')
+    // },
   ]
 
   const renderHealthInfo = () => {
@@ -236,10 +226,6 @@ function HomeDisplayScreen({ navigation }: { navigation: any }) {
         <Text>Danh sách lịch hẹn hôm nay</Text>
         <AntDesign name="arrowright" size={24} color="black" onPress={() => navigation.navigate("AppointmentList")} />
       </View>
-      <View style={[homeStyle.infoContainer, { flexDirection: "row", justifyContent: "space-between" }]}>
-        <Text>Thông tin tư vấn</Text>
-        <AntDesign name="arrowright" size={24} color="black" />
-      </View>
       {menuList.map((menu, index) => (
         <View key={index} style={homeStyle.contentContainer}>
           <Card
@@ -259,12 +245,12 @@ function HomeStackScreen() {
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen name='Trang chủ' component={HomeDisplayScreen} />
-      <HomeStack.Screen name='History' component={CureHistory} />
+      <HomeStack.Screen options={{title: "Lịch sử khám"}}name='History' component={CureHistory} />
       <HomeStack.Screen name='News' component={News} />
-      <HomeStack.Screen name='Appointment' component={Appointment} />
-      <HomeStack.Screen name='AppointmentList' component={AppointmentList} />
+      <HomeStack.Screen options={{title: "Đặt lịch khám"}}name='Appointment' component={Appointment} />
+      <HomeStack.Screen options={{title: "Danh sách lịch khám"}} name='AppointmentList' component={AppointmentList} />
       <HomeStack.Screen name='Diseases' component={Diseases} />
-      <HomeStack.Screen name='Details' component={DetailsScreen} />
+      <HomeStack.Screen options={{title: "Chi tiết lịch sử khám"}}name='Details' component={CureHistoryDetails} />
     </HomeStack.Navigator>
   );
 }

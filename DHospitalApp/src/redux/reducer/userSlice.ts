@@ -1,15 +1,16 @@
 
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { ApiStatus, AccountRole } from '../../utils/enum';
-import { ApiGet, loginApi } from '../../api';
+import { ApiGet, ApiPut, loginApi } from '../../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { baseURL } from '../../api/config/axios';
 
 interface CurrentUserState {
-    role: AccountRole | null;
-    username: string | null;
-    info: IUserInfo | null;
-    status: ApiStatus;
+  role: AccountRole | null;
+  username: string | null;
+  info: IUserInfo | null;
+  status: ApiStatus;
+  result: boolean | undefined;
 }
 
 export interface IUserInfo {
@@ -34,29 +35,30 @@ export interface IUserInfo {
 }
 
 const initialState: CurrentUserState = {
-    role: null,
-    username: null,
-    info: {
-      address: '',
-      avatar: '',
-      bloodPressureDiastolic: 0,
-      bloodPressureSystolic: 0,
-      dateOfBirth: '',
-      email: '',
-      fullname: '',
-      gender: 0,
-      glucose: 0,
-      heartRate: 0,
-      height: 0,
-      hospitalization: 0,
-      identification: '',
-      insurance: '',
-      phonenumber: '',
-      temperature: 0,
-      userId: '',
-      weight: 0
-    },
-    status: ApiStatus.None
+  role: null,
+  username: null,
+  info: {
+    address: '',
+    avatar: '',
+    bloodPressureDiastolic: 0,
+    bloodPressureSystolic: 0,
+    dateOfBirth: '',
+    email: '',
+    fullname: '',
+    gender: 0,
+    glucose: 0,
+    heartRate: 0,
+    height: 0,
+    hospitalization: 0,
+    identification: '',
+    insurance: '',
+    phonenumber: '',
+    temperature: 0,
+    userId: '',
+    weight: 0
+  },
+  status: ApiStatus.None,
+  result: undefined,
 };
 
 async function StorageSave(key: string, value: string) {
@@ -65,8 +67,8 @@ async function StorageSave(key: string, value: string) {
 
 export const getLoginInfo = createAsyncThunk(
   "login",
-  async (req: {username: string, password: string}) => {
-    const res = await loginApi(req);    
+  async (req: { username: string, password: string }) => {
+    const res = await loginApi(req);
     return res.data;
   }
 );
@@ -75,9 +77,25 @@ export const getCurrentUserInfo = createAsyncThunk(
   "getCurrentUserInfo",
   async () => {
     const res = await ApiGet(`${baseURL}/auth/infocurrentuser`);
-    return res.data;    
+    return res.data;
   }
 );
+
+export const updateUserInfo = createAsyncThunk(
+  "updateCurrentUser",
+  async (req: {
+    fullname: string,
+    email: string,
+    gender: string,
+    phonenumber: string,
+    address: string,
+    dateOfBirth: string,
+    identification: string
+  }) => {
+    const res = await ApiPut(`${baseURL}/auth/edit`, req);
+    return res;
+  }
+)
 
 
 export const userSlice = createSlice({
@@ -88,53 +106,67 @@ export const userSlice = createSlice({
       state.role = action.payload
     },
     setUsername: (state, action) => {
-        state.username = action.payload
+      state.username = action.payload
     },
     setInfoUser: (state, action) => {
-        state.info = action.payload
+      state.info = action.payload
     },
     userLogout: (state) => {
-        state.role = null,
+      state.role = null,
         state.username = null,
         state.info = null
     },
     setStatus: (state, action) => {
       state.status = action.payload;
+    },
+    setResult: (state, action) => {
+      state.result = action.payload;
     }
   },
   extraReducers(builder) {
     builder
-    .addCase(getLoginInfo.pending, (state) =>{
-      state.status = ApiStatus.Loading;
-    })
-    .addCase(getLoginInfo.fulfilled, (state, action) => {
-        state.status =ApiStatus.Success;
-        const {accessToken, refreshToken, role, username } = action.payload;
-        
+      .addCase(getLoginInfo.pending, (state) => {
+        state.status = ApiStatus.Loading;
+      })
+      .addCase(getLoginInfo.fulfilled, (state, action) => {
+        state.status = ApiStatus.Success;
+        const { accessToken, refreshToken, role, username } = action.payload;
+
         StorageSave("accessToken", accessToken);
         StorageSave("refreshToken", refreshToken);
         StorageSave("username", username);
         state.role = role;
         state.username = username;
-    })
-    .addCase(getLoginInfo.rejected, (state) =>{
-      state.status = ApiStatus.Failed;
-    })
+      })
+      .addCase(getLoginInfo.rejected, (state) => {
+        state.status = ApiStatus.Failed;
+      })
 
-    .addCase(getCurrentUserInfo.pending, (state) =>{
-      state.status = ApiStatus.Loading;
-    })
-    .addCase(getCurrentUserInfo.fulfilled, (state, action) => {
-        state.status =ApiStatus.Success;
+      .addCase(getCurrentUserInfo.pending, (state) => {
+        state.status = ApiStatus.Loading;
+      })
+      .addCase(getCurrentUserInfo.fulfilled, (state, action) => {
+        state.status = ApiStatus.Success;
         state.info = action.payload;
-    })
-    .addCase(getCurrentUserInfo.rejected, (state) =>{
-      state.status = ApiStatus.Failed;
-    })
+      })
+      .addCase(getCurrentUserInfo.rejected, (state) => {
+        state.status = ApiStatus.Failed;
+      })
+
+      .addCase(updateUserInfo.pending, (state) => {
+        state.status = ApiStatus.Loading;
+      })
+      .addCase(updateUserInfo.fulfilled, (state, action) => {
+        state.status = ApiStatus.Success;
+        state.result = true;
+      })
+      .addCase(updateUserInfo.rejected, (state) => {
+        state.status = ApiStatus.Failed;
+      })
   },
 });
 
-export const { setRole, setUsername, setInfoUser, userLogout, setStatus } = userSlice.actions;
+export const { setRole, setUsername, setInfoUser, userLogout, setStatus, setResult } = userSlice.actions;
 
 export default userSlice.reducer;
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {Image, TouchableOpacity, StyleSheet, Text, View, Pressable } from 'react-native';
+import {Image, TouchableOpacity, StyleSheet, Text, View, Pressable, Dimensions } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/base';
 
@@ -20,7 +20,7 @@ export const CustomListItem = (props: IListItemProps) => {
     },[selected])
 
     return (
-        <Pressable style={styles.wrap} >
+        <Pressable style={[styles.wrap, {width: selectable ? deviceWidth-40 : deviceWidth -20}]} >
             <View style={styles.container}>
                 {havePicture && (
                     <Image source={{ uri: item.image }} style={styles.image} />
@@ -52,20 +52,26 @@ export const CustomListItem = (props: IListItemProps) => {
                 </View>
             </View>
             {expanded && (
-                <Text style={[styles.details, styles.text]}>{item.details}</Text>
+                <View style={[styles.details, styles.text]}>{item.details}</View>
             )}
         </Pressable>
     )
 }
 
+const deviceWidth = Math.round(Dimensions.get('window').width);
+
 const styles = StyleSheet.create({
     wrap: {
-        borderColor: '#ccc', borderWidth: 1, marginVertical: 5, marginHorizontal: 10, borderRadius: 5, backgroundColor: '#fff',
+        // width: deviceWidth -40 ,
+        
+        borderColor: '#ccc', borderWidth: 1, marginVertical: 5, 
+        marginHorizontal: 10, 
+        borderRadius: 5, backgroundColor: '#fff',
         shadowColor: '#000', shadowOffset: { width: 3, height: 3 }, shadowOpacity: 0.2,
     },
-    container: { flexDirection: 'row', justifyContent: "space-between", alignItems: "center"},
+    container: { marginLeft: 5, flexDirection: 'row', justifyContent: "space-between", alignItems: "center"},
     image: { width: 50, height: 50, margin: 10, borderRadius: 5, },
     textContainer: { justifyContent: 'space-around' },
-    details: { margin: 10 },
+    details: { margin: 10, width: deviceWidth -40},
     text: { opacity: 0.7 },
 });

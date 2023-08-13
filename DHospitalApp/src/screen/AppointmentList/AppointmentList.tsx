@@ -54,7 +54,7 @@ export const AppointmentList = () => {
                     id: appt._id,
                     title: appt.appointmentDate,
                     subtitle: <View>
-                        <Text style={{marginRight: 8}}>{`Bác sĩ: ${appt.doctorName}`}</Text>
+                        <Text style={{ marginRight: 8 }}>{`Bác sĩ: ${appt.doctorName}`}</Text>
                         {getStatusRequestSchedule(appt.status)}
                     </View>,
                     details:
@@ -62,6 +62,7 @@ export const AppointmentList = () => {
                             <Text>{`Khoa: ${appt.departmentName}`}</Text>
                             <Text>{`Chức vụ: ${getDoctorPosition(appt.doctorPosition)}`}</Text>
                             <Text>{`Học vấn: ${getDoctorRank(appt.doctorRank)}`}</Text>
+                            <Text>{`Lý do: ${appt.initialSymptom}`}</Text>
                         </View>
                 })
             });
@@ -75,17 +76,24 @@ export const AppointmentList = () => {
             {status === ApiStatus.Loading ? (
                 <ActivityIndicator />
             ) : (
-                <FlatList
-                    data={items || []}
-                    keyExtractor={(item, index) => `${index}`}
-                    renderItem={({ item }: { item: any }) =>
-                        <CustomListItem
-                            item={item}
-                            havePicture={false}
-                            selectable={false}
-                        />
-                    }
-                />
+                items.length === 0 ?
+                    <View>
+                        <Text>
+                            Không có lịch hẹn khám nào
+                        </Text>
+                    </View>
+                    :
+                    <FlatList
+                        data={items || []}
+                        keyExtractor={(item, index) => `${index}`}
+                        renderItem={({ item }: { item: any }) =>
+                            <CustomListItem
+                                item={item}
+                                havePicture={false}
+                                selectable={false}
+                            />
+                        }
+                    />
 
             )}
         </View>
