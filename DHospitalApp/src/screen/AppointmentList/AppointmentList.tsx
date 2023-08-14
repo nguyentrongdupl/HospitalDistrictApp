@@ -84,6 +84,8 @@ export const AppointmentList = () => {
                     </View>
                     :
                     <FlatList
+                        // refreshing={status === ApiStatus.Loading}
+                        // onRefresh={() => dispatch(getAppointmentList(filter))}
                         data={items || []}
                         keyExtractor={(item, index) => `${index}`}
                         renderItem={({ item }: { item: any }) =>

@@ -187,7 +187,7 @@ const Appointment = ({ navigation }: { navigation: any }) => {
             alignItems: 'center'
         },
         textLine: {
-            height: 32
+            minHeight: 32
         },
         reasonInput: {
             padding: 10,
@@ -400,6 +400,7 @@ const Appointment = ({ navigation }: { navigation: any }) => {
     }
 
     const handleSubmit = () => {
+        console.log("dob: ",getMMDDYYYY(pickedDate));
         const reqBody = {
             departmentId: pickedDepartment ? pickedDepartment : "",
             appointmentDate: getMMDDYYYY(pickedDate),

@@ -63,15 +63,20 @@ const Profile = ({ navigation }: { navigation: any }) => {
         textInfoContainer: {
             display: 'flex',
             flexDirection: 'row',
-            justifyContent: "space-between",
+            // justifyContent: "space-between",
 
             paddingVertical: 8,
             borderColor: "#ADB1B4",
             borderBottomWidth: 1
         },
+        textTitle: {
+            fontSize: 16,
+            width: 170
+        },
         textInfo: {
             // height: 32,
             fontSize: 16,
+            maxWidth: 200
         },
         editBtn: {
             height: 40,
@@ -96,7 +101,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
         },
     });
 
-    const personalInfomation = [
+    const personalInfomation =React.useCallback(() => {return [
         {
             title: 'Tên đăng nhập:',
             value: username
@@ -129,7 +134,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
             title: 'Bảo hiểm y tế',
             value: info?.insurance
         },
-    ];
+    ]},[status]);
 
     React.useEffect(() => {
         if (status === ApiStatus.Success) {
@@ -155,9 +160,9 @@ const Profile = ({ navigation }: { navigation: any }) => {
                 </Text>
             </View>
             <View style={profileStyle.infoContainer}>
-                {personalInfomation.map((info) => (
+                {personalInfomation().map((info) => (
                     <View key={info.title} style={profileStyle.textInfoContainer}>
-                        <Text style={profileStyle.textInfo}>{info.title}</Text>
+                        <Text style={profileStyle.textTitle}>{info.title}</Text>
                         <Text style={profileStyle.textInfo}>{info.value}</Text>
                     </View>
                 ))}

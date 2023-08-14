@@ -37,5 +37,5 @@ export const getDatestringtoMMDDYYYY = (str: string) => {
 
 export const getMMDDYYYY = (str: string) => {
     let arr = str.split("/");
-    return(`0${arr[1]}/0${arr[0]}/${arr[2]}`);
+    return(`${arr[1]}/${arr[0]}/${arr[2]}`);
 }

@@ -8,6 +8,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import DateTimePickerAndroid from '@react-native-community/datetimepicker';
 import moment from 'moment-timezone';
 import { ApiStatus } from '../../utils/enum';
+import { getMMDDYYYY } from '../../utils/convert';
 
 interface IEditProfileProps {
     // profileInfo: IUserInfo;
@@ -43,7 +44,7 @@ const EditProfile = (props: IEditProfileProps) => {
 
             if (Platform.OS === "android") {
                 toggleDatePicker();
-                setPickedDate(currentDate.toDateString());
+                setPickedDate(currentDate.toLocaleString().split(", ")[1]);
             }
         } else {
             toggleDatePicker();
@@ -125,7 +126,7 @@ const EditProfile = (props: IEditProfileProps) => {
             gender: gender || "",
             phonenumber: phoneNumber,
             address: address || '',
-            dateOfBirth: moment.utc(info?.dateOfBirth, 'DD-MM-YYYY').local().format("MM/DD/YYYY"),
+            dateOfBirth: getMMDDYYYY(pickedDate),
             identification: identification
         }
         dispatch(updateUserInfo(reqbody));        

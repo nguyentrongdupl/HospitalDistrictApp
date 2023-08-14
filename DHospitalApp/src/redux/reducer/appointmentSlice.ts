@@ -75,6 +75,7 @@ export const submitAppointment = createAsyncThunk(
   "appointment/submitAppointment",
   async (req: ISubReq) => {
     const res = await ApiPost(`${baseURL}/schedule/requestmedical`,req);
+    console.log("res: ", res);
     return res;
   }
 )

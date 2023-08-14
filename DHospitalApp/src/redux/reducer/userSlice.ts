@@ -93,6 +93,8 @@ export const updateUserInfo = createAsyncThunk(
     identification: string
   }) => {
     const res = await ApiPut(`${baseURL}/auth/edit`, req);
+    console.log("req: ", req);
+    console.log("res ", res)
     return res;
   }
 )
@@ -157,8 +159,10 @@ export const userSlice = createSlice({
         state.status = ApiStatus.Loading;
       })
       .addCase(updateUserInfo.fulfilled, (state, action) => {
-        state.status = ApiStatus.Success;
-        state.result = true;
+        if(action.payload.status === 0){
+          state.status = ApiStatus.Success;
+          state.result = true;
+        } else state.status = ApiStatus.Failed;
       })
       .addCase(updateUserInfo.rejected, (state) => {
         state.status = ApiStatus.Failed;
